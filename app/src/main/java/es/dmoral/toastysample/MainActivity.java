@@ -93,6 +93,33 @@ public class MainActivity extends AppCompatActivity {
                 Toasty.Config.reset(); // Use this if you want to use the configuration above only once
             }
         });
+
+
+        findViewById(R.id.no_delay_replacement).setOnClickListener(new View.OnClickListener() {
+            int i = 0;
+            @Override
+            public void onClick(View v) {
+                switch (i) {
+                    case 0:
+                        Toasty.error(getApplicationContext(), "This is an error toast.", Toast.LENGTH_LONG, true).show();
+                        break;
+                    case 1:
+                        Toasty.success(getApplicationContext(), "Success!", Toast.LENGTH_LONG,true).show();
+                        break;
+                    case 2:
+                        Toasty.info(getApplicationContext(), "Here is some info for you.", Toast.LENGTH_LONG,true).show();
+                        break;
+                    case 3:
+                        Toasty.warning(getApplicationContext(), "Beware of the dog.", Toast.LENGTH_LONG,true).show();
+                        break;
+                    case 4:
+                        Toasty.normal(getApplicationContext(), "Normal toast w/o icon", Toast.LENGTH_LONG).show();
+                        i = -1;
+                        break;
+                }
+                i++;
+            }
+        });
     }
 
     private CharSequence getFormattedMessage() {
