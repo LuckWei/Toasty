@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.CheckResult;
@@ -303,6 +304,9 @@ public class Toasty {
         result.duration = duration;
         result.mNextView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.toast_layout, null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            result.mNextView.setTranslationZ(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 4F, context.getResources().getDisplayMetrics()));
+        }
         final ImageView toastIcon = result.mNextView.findViewById(R.id.toast_icon);
         final TextView toastTextView = result.mNextView.findViewById(R.id.toast_text);
 
