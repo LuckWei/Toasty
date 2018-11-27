@@ -39,6 +39,7 @@ import android.widget.Toast;
 @SuppressLint("InflateParams")
 public class Toasty {
     private static final Handler HANDLER = new Handler(Looper.getMainLooper());
+    private static ShowToastRunnable mShowToastRunnable;
     @ColorInt
     private static int DEFAULT_TEXT_COLOR = Color.parseColor("#FFFFFF");
     @ColorInt
@@ -61,6 +62,9 @@ public class Toasty {
 
     private Toasty() {
         // avoiding instantiation
+        if (mShowToastRunnable == null) {
+            mShowToastRunnable = new ShowToastRunnable(this);
+        }
     }
 
     private Context context;
@@ -330,20 +334,35 @@ public class Toasty {
         if (context == null) {
             throw new RuntimeException("This Toast was not created with Toast.makeText()");
         }
-        HANDLER.post(new Runnable() {
-            @Override
-            public void run() {
-                if (toast == null) {
-                    toast = new Toast(context);
-                    toast.setView(mNextView);
-                    toast.setDuration(duration);
-                } else {
-                    toast.setView(mNextView);
-                    toast.setDuration(duration);
-                }
-                toast.show();
-            }
-        });
+        if (Thread.currentThread().getId() == 1) {
+            prvShow();
+        }
+        else {
+            HANDLER.post(mShowToastRunnable);
+        }
+    }
+
+    private static class ShowToastRunnable implements Runnable{
+        private Toasty mRoot;
+        private ShowToastRunnable(Toasty root){
+            mRoot = root;
+        }
+        @Override
+        public void run() {
+            mRoot.prvShow();
+        }
+    }
+
+    private void prvShow() {
+        if (toast == null) {
+            toast = new Toast(context);
+            toast.setView(mNextView);
+            toast.setDuration(duration);
+        } else {
+            toast.setView(mNextView);
+            toast.setDuration(duration);
+        }
+        toast.show();
     }
 
     public static class Config {
