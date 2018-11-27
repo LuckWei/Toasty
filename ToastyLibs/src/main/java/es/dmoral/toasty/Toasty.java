@@ -305,7 +305,7 @@ public class Toasty {
         result.mNextView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.toast_layout, null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            result.mNextView.setTranslationZ(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 4F, context.getResources().getDisplayMetrics()));
+            result.mNextView.setTranslationZ(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, 8F, context.getResources().getDisplayMetrics()));
         }
         final ImageView toastIcon = result.mNextView.findViewById(R.id.toast_icon);
         final TextView toastTextView = result.mNextView.findViewById(R.id.toast_text);
