@@ -70,9 +70,6 @@ public class Toasty {
 
     private Toasty() {
         // avoiding instantiation
-        if (mShowToastRunnable == null) {
-            mShowToastRunnable = new ShowToastRunnable(toast);
-        }
     }
 
     @CheckResult
@@ -343,6 +340,9 @@ public class Toasty {
             if (Thread.currentThread().getId() == 1) {
                 toast.show();
             } else {
+                if(mShowToastRunnable == null){
+                    mShowToastRunnable = new ShowToastRunnable(toast);
+                }
                 HANDLER.post(mShowToastRunnable);
             }
         }
