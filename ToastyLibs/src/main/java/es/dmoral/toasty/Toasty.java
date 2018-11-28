@@ -335,7 +335,7 @@ public class Toasty {
         if (context == null) {
             throw new RuntimeException("This Toast was not created with Toast.makeText()");
         }
-        synchronized (toast) {
+        synchronized (this) {
             updateToast();
             if (Thread.currentThread().getId() == 1) {
                 toast.show();
