@@ -61,19 +61,19 @@ public class Toasty {
     private static boolean tintIcon = true;
     private static boolean withIcon = false;
 
-    private Toasty() {
-        // avoiding instantiation
-        if (mShowToastRunnable == null) {
-            mShowToastRunnable = new ShowToastRunnable(this);
-        }
-    }
-
+    private static Toast toast;
     private Context context;
     private CharSequence message;
     private int duration;
     private View mNextView;
     private Drawable drawableFrame;
-    private static Toast toast;
+
+    private Toasty() {
+        // avoiding instantiation
+        if (mShowToastRunnable == null) {
+            mShowToastRunnable = new ShowToastRunnable(toast);
+        }
+    }
 
     @CheckResult
     public static Toasty normal(@NonNull Context context, @StringRes int message) {
@@ -338,35 +338,35 @@ public class Toasty {
         if (context == null) {
             throw new RuntimeException("This Toast was not created with Toast.makeText()");
         }
-        if (Thread.currentThread().getId() == 1) {
-            prvShow();
-        }
-        else {
-            HANDLER.post(mShowToastRunnable);
+        synchronized (toast) {
+            updateToast();
+            if (Thread.currentThread().getId() == 1) {
+                toast.show();
+            } else {
+                HANDLER.post(mShowToastRunnable);
+            }
         }
     }
 
     private static class ShowToastRunnable implements Runnable{
-        private Toasty mRoot;
-        private ShowToastRunnable(Toasty root){
-            mRoot = root;
+        private Toast mToast;
+        private ShowToastRunnable(Toast toast){
+            mToast = toast;
         }
         @Override
         public void run() {
-            mRoot.prvShow();
+            if(mToast != null){
+                mToast.show();
+            }
         }
     }
 
-    private void prvShow() {
+    private void updateToast() {
         if (toast == null) {
-            toast = new Toast(context);
-            toast.setView(mNextView);
-            toast.setDuration(duration);
-        } else {
-            toast.setView(mNextView);
-            toast.setDuration(duration);
+            toast = new Toast(context.getApplicationContext());
         }
-        toast.show();
+        toast.setView(mNextView);
+        toast.setDuration(duration);
     }
 
     public static class Config {
